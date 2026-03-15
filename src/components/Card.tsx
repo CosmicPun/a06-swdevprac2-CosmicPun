@@ -1,17 +1,29 @@
 "use client";
 import Image from "next/image";
-import InterectiveCard from "./InteractiveCard";
+import Rating from "@mui/material/Rating";
+import { useState } from "react";
+import InteractiveCard from "./InteractiveCard";
 
 export default function Card({
   venueName,
   imgSrc,
+  onRatingChange,
 }: {
   venueName: string;
   imgSrc: string;
+  onRatingChange?: (rating: number) => void;
 }) {
+  const [rating, setRating] = useState<number | null>(0);
+
+  const handleChange = (_: React.SyntheticEvent, newValue: number | null) => {
+    const val = newValue ?? 0;
+    setRating(val);
+    onRatingChange?.(val);
+  };
+
   return (
-    <InterectiveCard contentName={venueName}>
-      {/* Image: takes up full card, object-cover fills cleanly */}
+    <InteractiveCard contentName={venueName}>
+      {/* Image */}
       <div className="w-full h-[220px] relative overflow-hidden rounded-t-lg">
         <Image
           src={imgSrc}
@@ -21,12 +33,21 @@ export default function Card({
         />
       </div>
 
-      {/* Text: sits below image with clean padding */}
+      {/* Text */}
       <div className="px-4 py-3">
         <p className="text-sm font-medium text-gray-800 tracking-wide truncate">
           {venueName}
         </p>
+
+        {/* Rating */}
+        <Rating
+          id={`${venueName} Rating`}
+          name={`${venueName} Rating`}
+          data-testid={`${venueName} Rating`}
+          value={rating}
+          onChange={handleChange}
+        />
       </div>
-    </InterectiveCard>
+    </InteractiveCard>
   );
 }
